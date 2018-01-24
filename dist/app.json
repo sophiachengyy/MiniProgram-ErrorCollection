@@ -1,0 +1,1 @@
+{"pages":["pages/home","pages/collection","pages/dealImage"],"window":{"backgroundTextStyle":"light","navigationBarBackgroundColor":"#42de93","navigationBarTitleText":"云智错题本","navigationBarTextStyle":"black"},"tabBar":{"list":[{"pagePath":"pages/home","text":"我的错题"},{"pagePath":"pages/collection","text":"错题采集"}]}}

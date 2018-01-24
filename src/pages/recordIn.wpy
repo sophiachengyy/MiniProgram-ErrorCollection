@@ -1,0 +1,43 @@
+<template>
+    <view class="record-container">
+        <view>
+
+        </view>
+        <view>
+            错题列表
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class Home extends wepy.page {
+        config = {
+            navigationBarTitleText: '错题列表'
+        }
+
+        data = {
+            userInfo: null
+        }
+
+        onLoad() {
+            let self = this
+            this.$parent.getUserInfo(function(res) {
+                self.userInfo = res
+                self.$apply()
+            })
+        }
+    }
+</script>
+
+<style>
+    .home-container {
+        text-align: center;
+    }
+    .userinfo-avatar {
+        width: 80rpx;
+        height: 80rpx;
+        border-radius: 80rpx;
+    }
+</style>

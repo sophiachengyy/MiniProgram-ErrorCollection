@@ -1,0 +1,10 @@
+
+    <view class="home-container">
+        <view>
+            <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+            <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+        </view>
+        <view>
+            错题列表
+        </view>
+    </view>

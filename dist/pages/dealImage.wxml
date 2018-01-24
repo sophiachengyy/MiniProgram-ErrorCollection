@@ -1,0 +1,9 @@
+
+    <view id="deal-image">
+        <canvas canvas-id="deal" id="deal-canvas"/>
+    </view>
+    <movable-area>
+        <movable-view id="line-box" direction="vertical">
+            <view id="line"/>
+        </movable-view>
+    </movable-area>

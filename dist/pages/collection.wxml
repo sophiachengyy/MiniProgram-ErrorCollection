@@ -1,0 +1,27 @@
+
+    <view class="collection-container">
+        <camera>
+            <cover-view class="grid-box">
+                <cover-view class="grid-container">
+                    <cover-view class="grid-item"/>
+                    <cover-view class="grid-item"/>
+                    <cover-view class="grid-item"/>
+                </cover-view>
+                <cover-view class="grid-container">
+                    <cover-view class="grid-item"/>
+                    <cover-view class="grid-item"/>
+                    <cover-view class="grid-item"/>
+                </cover-view>
+                <cover-view class="grid-container">
+                    <cover-view class="grid-item"/>
+                    <cover-view class="grid-item"/>
+                    <cover-view class="grid-item"/>
+                </cover-view>
+            </cover-view>
+        </camera>
+        <view class="area">
+            <view class="take-btn" bindtap="takePhoto">拍摄</view>
+            <view class="chose-btn" bindtap="chosePic">选择图片</view>
+            <view class="back-btn" bindtap="back">返回</view>
+        </view>
+    </view>

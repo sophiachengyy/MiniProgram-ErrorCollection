@@ -1,0 +1,68 @@
+<template>
+    <view id="deal-image">
+        <canvas canvas-id="deal" id="deal-canvas"></canvas>
+    </view>
+    <movable-area>
+        <movable-view id="line-box" direction="vertical">
+            <view id="line"></view>
+        </movable-view>
+    </movable-area>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class DealImage extends wepy.page {
+        config = {
+            navigationBarTitleText: '错题采集'
+        }
+
+        data = {
+            imageSrc: ''
+        }
+
+        onLoad(param) {
+            wepy.showModal({
+                title: '成功！',
+                content: JSON.stringify(param)
+            })
+            const imageSrc = param.src
+            const ctx = wepy.createCanvasContext('deal')
+
+            let query = wepy.createSelectorQuery()
+            query.select('#deal-canvas').boundingClientRect()
+            query.exec(function(res) {
+                let width = res[0].width
+                let height = res[0].height
+                ctx.drawImage(imageSrc, 0, 0, width, height)
+                ctx.draw()
+            })
+        }
+    }
+</script>
+
+<style>
+    #deal-image {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    canvas {
+        width: 100%;
+        height: calc(100vh - 180rpx);
+        background: aqua;
+    }
+    #line-box {
+        position: absolute;
+        top: 30%;
+        left: 0;
+        width: 100%;
+        height: 2rpx;
+        background: #42de93;
+    }
+    movable-area {
+        width: 100%;
+        height: calc(100vh - 180rpx);
+        position: relative;
+    }
+</style>

@@ -1,0 +1,88 @@
+<style lang="less">
+    .container {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        box-sizing: border-box;
+        text-align: center;
+    }
+</style>
+
+<script>
+    import wepy from 'wepy'
+    import 'wepy-async-function'
+
+    export default class extends wepy.app {
+        config = {
+            pages: [
+                'pages/home',
+                'pages/collection',
+                'pages/dealImage'
+            ],
+            window: {
+                backgroundTextStyle: 'light',
+                navigationBarBackgroundColor: '#42de93',
+                navigationBarTitleText: '云智错题本',
+                navigationBarTextStyle: 'black'
+            },
+            tabBar: {
+                list: [{
+                    pagePath: 'pages/home',
+                    text: '我的错题'
+                }, {
+                    pagePath: 'pages/collection',
+                    text: '错题采集'
+                }]
+            }
+        }
+
+        globalData = {
+            userInfo: null
+        }
+
+        constructor() {
+            super()
+            this.use('requestfix')
+        }
+
+        onLaunch() {
+            this.getUserInfo()
+        }
+
+        sleep(s) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve('promise resolved')
+                }, s * 1000)
+            })
+        }
+
+        async testAsync() {
+            const data = await this.sleep(3)
+            console.log(data)
+        }
+
+        getUserInfo(cb) {
+            const that = this
+            if (this.globalData.userInfo) {
+                return this.globalData.userInfo
+            }
+            wepy.getUserInfo({
+                success(res) {
+                    that.globalData.userInfo = res.userInfo
+                    cb && cb(res.userInfo)
+                },
+                fail(res) {
+                    wepy.openSetting()
+                }
+            })
+        }
+        methods = {
+            back() {
+                wepy.navigateBack()
+            }
+        }
+    }
+</script>
