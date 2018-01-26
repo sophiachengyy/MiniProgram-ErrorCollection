@@ -1,9 +1,39 @@
 
     <view id="deal-image">
         <canvas canvas-id="deal" id="deal-canvas"/>
+        <movable-area>
+            <movable-view id="line-box" direction="vertical">
+                <view id="line"/>
+            </movable-view>
+        </movable-area>
+        <view class="rect-cut-container">
+            
+    
+    <view class="dragable-block cut-mask" bindtouchstart="$cutmask$dragable1$onTouchStart" bindtouchmove="$cutmask$dragable1$onTouchMove" bindtouchend="$cutmask$dragable1$onTouchEnd" bindtouchcancel="$cutmask$dragable1$onTouchCancel">
+        
+        
+    <view class="dragable-block left-top-block" bindtouchstart="$cutmask$dragable2$onTouchStart" bindtouchmove="$cutmask$dragable2$onTouchMove" bindtouchend="$cutmask$dragable2$onTouchEnd" bindtouchcancel="$cutmask$dragable2$onTouchCancel">
+        
     </view>
-    <movable-area>
-        <movable-view id="line-box" direction="vertical">
-            <view id="line"/>
-        </movable-view>
-    </movable-area>
+
+        
+    <view class="dragable-block top-left-block" bindtouchstart="$cutmask$dragable3$onTouchStart" bindtouchmove="$cutmask$dragable3$onTouchMove" bindtouchend="$cutmask$dragable3$onTouchEnd" bindtouchcancel="$cutmask$dragable3$onTouchCancel">
+        
+    </view>
+
+        
+    <view class="dragable-block right-bottom-block" bindtouchstart="$cutmask$dragable4$onTouchStart" bindtouchmove="$cutmask$dragable4$onTouchMove" bindtouchend="$cutmask$dragable4$onTouchEnd" bindtouchcancel="$cutmask$dragable4$onTouchCancel">
+        
+    </view>
+
+        
+    <view class="dragable-block bottom-right-block" bindtouchstart="$cutmask$dragable5$onTouchStart" bindtouchmove="$cutmask$dragable5$onTouchMove" bindtouchend="$cutmask$dragable5$onTouchEnd" bindtouchcancel="$cutmask$dragable5$onTouchCancel">
+        
+    </view>
+
+    
+    </view>
+
+
+        </view>
+    </view>

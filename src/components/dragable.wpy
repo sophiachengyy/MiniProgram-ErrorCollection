@@ -1,0 +1,46 @@
+<template>
+    <view class="dragable-block" @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onTouchEnd" @touchcancel="onTouchCancel">
+        <slot></slot>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+
+    let isStartTouch = false
+    let [sx, sy, mx, my] = [0, 0, 0, 0]
+
+    export default class CutMask extends wepy.component {
+        methods = {
+            onTouchStart(e) {
+                isStartTouch = true
+                sx = e.touches[0].clientX
+                sy = e.touches[0].clientY
+            },
+            onTouchMove(e) {
+                if (isStartTouch) {
+                    mx = e.touches[0].clientX
+                    my = e.touches[0].clientY
+                    let offset = {
+                        x: mx - sx,
+                        y: my - sy
+                    }
+                    sx = mx
+                    sy = my
+                    console.error(111)
+                    this.$emit('dragging', offset)
+                }
+            },
+            onTouchEnd(e) {
+                isStartTouch = false
+                this.$emit('dragend')
+            },
+            onTouchCancel(e) {
+                isStartTouch = false
+                this.$emit('dragend')
+            }
+        }
+    }
+</script>
+<style>
+
+</style>

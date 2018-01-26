@@ -1,0 +1,48 @@
+<template>
+    <dragable1 class="cut-mask" @dragging.user="maskMove" style="width: {{width}}px;height:{{height}}px;top: {{top}}px;left:{{left}}px;">
+        <dragable2 class="left-top-block"></dragable2>
+        <dragable3 class="top-left-block"></dragable3>
+        <dragable4 class="right-bottom-block"></dragable4>
+        <dragable5 class="bottom-right-block"></dragable5>
+    </dragable1>
+</template>
+<script>
+    import wepy from 'wepy'
+    import dragable from './dragable'
+
+    export default class CutMask extends wepy.component {
+        props = {
+            width: {},
+            height: {},
+            left: {},
+            top: {}
+        }
+
+        components = {
+            dragable1: dragable,
+            dragable2: dragable,
+            dragable3: dragable,
+            dragable4: dragable,
+            dragable5: dragable
+        }
+
+        methods = {
+            maskEndMove(e) {
+
+            },
+            maskMove(e) {
+                console.error(e)
+            }
+        }
+    }
+</script>
+<style>
+    .cut-mask {
+        position: absolute;
+        min-width: 10px;
+        min-height: 10px;
+        max-width: 100vw;
+        max-height: 100vh;
+        background: rgba(0,0,0,.3);
+    }
+</style>

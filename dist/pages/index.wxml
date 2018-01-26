@@ -85,20 +85,20 @@
             
             <block wx:for="{{groupList}}" wx:for-index="index" wx:for-item="item" wx:key="key">
                 
-  <view class="group">
-    <text class="id">{{item.id}}. </text>
-    <text class="name" bindtap="$group$tap" data-com-index="{{index}}">{{item.name}}</text>
-    <view>
-      <block wx:for="{{item.list}}" wx:for-index="$group$index" wx:for-item="$group$item" wx:key="$group$key">
-        
+    <view class="group">
+        <text class="id">{{item.id}}.</text>
+        <text class="name" bindtap="$group$tap" data-com-index="{{index}}">{{item.name}}</text>
+        <view>
+            <block wx:for="{{item.list}}" wx:for-index="$group$index" wx:for-item="$group$item" wx:key="$group$key">
+                
   <view class="groupitem">
     --<text class="id">{{$group$item.childid}}.</text>
     <text class="name" bindtap="$group$groupitem$tap" data-com-index="{{index}}-{{$group$index}}"> {{$group$item.childname}}</text>
   </view>
 
-      </block>
+            </block>
+        </view>
     </view>
-  </view>
 
             </block>
         

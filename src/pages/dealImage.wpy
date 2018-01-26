@@ -1,24 +1,49 @@
 <template>
     <view id="deal-image">
         <canvas canvas-id="deal" id="deal-canvas"></canvas>
+        <movable-area>
+            <movable-view id="line-box" direction="vertical">
+                <view id="line"></view>
+            </movable-view>
+        </movable-area>
+        <view class="rect-cut-container">
+            <cutmask :width="cutWidth" :height="cutHeight" :top="cutTop" :left="cutLeft"></cutmask>
+        </view>
     </view>
-    <movable-area>
-        <movable-view id="line-box" direction="vertical">
-            <view id="line"></view>
-        </movable-view>
-    </movable-area>
 </template>
 
 <script>
     import wepy from 'wepy'
+    import cutMask from '../components/cutMask'
 
     export default class DealImage extends wepy.page {
         config = {
             navigationBarTitleText: '错题采集'
         }
 
+        components = {
+            cutmask: cutMask
+        }
+
         data = {
-            imageSrc: ''
+            imageSrc: '',
+            cutWidth: 200,
+            cutHeight: 200,
+            cutLeft: 100,
+            cutTop: 100
+        }
+
+        methods = {
+
+        }
+
+        computed = {
+            topLeftBlockTop() {
+                return this.cutTop
+            },
+            topLeftBlockLeft() {
+                return this.cutLeft - 5
+            }
         }
 
         onLoad(param) {
@@ -48,7 +73,7 @@
         height: 100%;
     }
     canvas {
-        width: 100%;
+        width: 100vw;
         height: calc(100vh - 180rpx);
         background: aqua;
     }
@@ -57,12 +82,44 @@
         top: 30%;
         left: 0;
         width: 100%;
-        height: 2rpx;
+        height: 10rpx;
         background: #42de93;
     }
     movable-area {
         width: 100%;
-        height: calc(100vh - 180rpx);
-        position: relative;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .rect-cut-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        overflow: hidden;
+    }
+    movable-view.rect-cut {
+        border: 1px solid #efefef;
+        position: absolute;
+        background: rgba(0,0,0,.3);
+    }
+    .top-left-border {
+        width: 5px;
+        height: 30px;
+        background: #42de98;
+        position: absolute;
+        left: -5px;
+        top: 0;
+    }
+    .top-left-border::after {
+        content: '\20';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        bottom: -10px;
+        right: -10px;
     }
 </style>
