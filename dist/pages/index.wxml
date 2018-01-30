@@ -55,11 +55,11 @@
             <text class="testcounter">计数组件1:</text>
             <view class="counterview">
                 
-  <view class="counter {{$counter1$style}}">
-    <button bindtap="$counter1$plus" size="mini">  +  </button>
-    <button bindtap="$counter1$minus" size="mini">  -  </button>
-    <text class="count {{$counter1$num > 55 ? 'red' : ''}} {{$counter1$num < 45 ? 'green' : ''}}" > {{$counter1$num}} </text>
-  </view>
+    <view class="counter {{$counter1$style}}">
+        <button bindtap="$counter1$plus" size="mini"> +</button>
+        <button bindtap="$counter1$minus" size="mini"> -</button>
+        <text class="count {{$counter1$num > 55 ? 'red' : ''}} {{$counter1$num < 45 ? 'green' : ''}}" > {{$counter1$num}}</text>
+    </view>
 
             </view>
 
@@ -67,11 +67,11 @@
 
             <view class="counterview">
                 
-  <view class="counter {{$counter2$style}}">
-    <button bindtap="$counter2$plus" size="mini">  +  </button>
-    <button bindtap="$counter2$minus" size="mini">  -  </button>
-    <text class="count {{$counter2$num > 55 ? 'red' : ''}} {{$counter2$num < 45 ? 'green' : ''}}" > {{$counter2$num}} </text>
-  </view>
+    <view class="counter {{$counter2$style}}">
+        <button bindtap="$counter2$plus" size="mini"> +</button>
+        <button bindtap="$counter2$minus" size="mini"> -</button>
+        <text class="count {{$counter2$num > 55 ? 'red' : ''}} {{$counter2$num < 45 ? 'green' : ''}}" > {{$counter2$num}}</text>
+    </view>
 
             </view>
         

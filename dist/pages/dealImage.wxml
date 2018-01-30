@@ -1,39 +1,22 @@
 
     <view id="deal-image">
         <canvas canvas-id="deal" id="deal-canvas"/>
-        <movable-area>
-            <movable-view id="line-box" direction="vertical">
-                <view id="line"/>
-            </movable-view>
-        </movable-area>
+        <view id="cut-image">
+            <image src="{{imageSrc}}" mode="aspectFit"/>
+        </view>
         <view class="rect-cut-container">
-            
-    
-    <view class="dragable-block cut-mask" bindtouchstart="$cutmask$dragable1$onTouchStart" bindtouchmove="$cutmask$dragable1$onTouchMove" bindtouchend="$cutmask$dragable1$onTouchEnd" bindtouchcancel="$cutmask$dragable1$onTouchCancel">
-        
-        
-    <view class="dragable-block left-top-block" bindtouchstart="$cutmask$dragable2$onTouchStart" bindtouchmove="$cutmask$dragable2$onTouchMove" bindtouchend="$cutmask$dragable2$onTouchEnd" bindtouchcancel="$cutmask$dragable2$onTouchCancel">
-        
-    </view>
-
-        
-    <view class="dragable-block top-left-block" bindtouchstart="$cutmask$dragable3$onTouchStart" bindtouchmove="$cutmask$dragable3$onTouchMove" bindtouchend="$cutmask$dragable3$onTouchEnd" bindtouchcancel="$cutmask$dragable3$onTouchCancel">
-        
-    </view>
-
-        
-    <view class="dragable-block right-bottom-block" bindtouchstart="$cutmask$dragable4$onTouchStart" bindtouchmove="$cutmask$dragable4$onTouchMove" bindtouchend="$cutmask$dragable4$onTouchEnd" bindtouchcancel="$cutmask$dragable4$onTouchCancel">
-        
-    </view>
-
-        
-    <view class="dragable-block bottom-right-block" bindtouchstart="$cutmask$dragable5$onTouchStart" bindtouchmove="$cutmask$dragable5$onTouchMove" bindtouchend="$cutmask$dragable5$onTouchEnd" bindtouchcancel="$cutmask$dragable5$onTouchCancel">
-        
-    </view>
-
-    
-    </view>
-
-
+            <view class="cut-block" data-type="block" style="width: {{cutWidth}}px;height: {{cutHeight}}px;top: {{cutTop}}px;left: {{cutLeft}}px;" catchtouchstart="blockTouchStart" catchtouchmove="blockTouchMove">
+                <view data-type="point" data-pos="top" class="point point-top" catchtouchstart="pointTouchStart" catchtouchmove="pointTouchMove"/>
+                <view data-type="point" data-pos="bottom" class="point point-bottom" catchtouchstart="pointTouchStart" catchtouchmove="pointTouchMove"/>
+                <view data-type="point" data-pos="left" class="point point-left" catchtouchstart="pointTouchStart" catchtouchmove="pointTouchMove"/>
+                <view data-type="point" data-pos="right" class="point point-right" catchtouchstart="pointTouchStart" catchtouchmove="pointTouchMove"/>
+                <view data-type="point" data-pos="top-left" class="point point-top-left" catchtouchstart="pointTouchStart" catchtouchmove="pointTouchMove"/>
+                <view data-type="point" data-pos="top-right" class="point point-top-right" catchtouchstart="pointTouchStart" catchtouchmove="pointTouchMove"/>
+                <view data-type="point" data-pos="bottom-left" class="point point-bottom-left" catchtouchstart="pointTouchStart" catchtouchmove="pointTouchMove"/>
+                <view data-type="point" data-pos="bottom-right" class="point point-bottom-right" catchtouchstart="pointTouchStart" catchtouchmove="pointTouchMove"/>
+            </view>
+        </view>
+        <view id="action-area">
+            <view id="cut-btn" bindtap="doCut">确定</view>
         </view>
     </view>

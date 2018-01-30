@@ -1,10 +1,13 @@
 <template>
-    <dragable1 class="cut-mask" @dragging.user="maskMove" style="width: {{width}}px;height:{{height}}px;top: {{top}}px;left:{{left}}px;">
-        <dragable2 class="left-top-block"></dragable2>
-        <dragable3 class="top-left-block"></dragable3>
-        <dragable4 class="right-bottom-block"></dragable4>
-        <dragable5 class="bottom-right-block"></dragable5>
-    </dragable1>
+    <view>
+        <dragable1 class="cut-mask" @dragging.user="maskMove"
+                   style="width:200px;height:200px;top:{{containerTop}};left:{{containerLeft}};">
+            <dragable2 class="left-top-block"></dragable2>
+            <dragable3 class="top-left-block"></dragable3>
+            <dragable4 class="right-bottom-block"></dragable4>
+            <dragable5 class="bottom-right-block"></dragable5>
+        </dragable1>
+    </view>
 </template>
 <script>
     import wepy from 'wepy'
@@ -12,10 +15,10 @@
 
     export default class CutMask extends wepy.component {
         props = {
-            width: {},
-            height: {},
-            left: {},
-            top: {}
+            width: Number,
+            height: Number,
+            left: Number,
+            top: Number
         }
 
         components = {
@@ -26,6 +29,21 @@
             dragable5: dragable
         }
 
+        computed = {
+            containerWidth() {
+                return this.width + 'px'
+            },
+            containerHeight() {
+                return this.height + 'px'
+            },
+            containerTop() {
+                return this.top + 'px'
+            },
+            containerLeft() {
+                return this.left + 'px'
+            }
+        }
+
         methods = {
             maskEndMove(e) {
 
@@ -33,6 +51,12 @@
             maskMove(e) {
                 console.error(e)
             }
+        }
+
+        onLoad() {
+            console.log(this.width)
+            console.log(this.height)
+            this.$apply()
         }
     }
 </script>

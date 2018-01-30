@@ -1,20 +1,33 @@
 <template>
     <view id="deal-image">
         <canvas canvas-id="deal" id="deal-canvas"></canvas>
-        <movable-area>
-            <movable-view id="line-box" direction="vertical">
-                <view id="line"></view>
-            </movable-view>
-        </movable-area>
+        <view id="cut-image">
+            <image src="{{imageSrc}}" mode="aspectFit"></image>
+        </view>
         <view class="rect-cut-container">
-            <cutmask :width="cutWidth" :height="cutHeight" :top="cutTop" :left="cutLeft"></cutmask>
+            <view class="cut-block" data-type="block" style="width: {{cutWidth}}px;height: {{cutHeight}}px;top: {{cutTop}}px;left: {{cutLeft}}px;"
+                  @touchstart.stop="blockTouchStart" @touchmove.stop="blockTouchMove">
+                <view data-type="point" data-pos="top" class="point point-top" @touchstart.stop="pointTouchStart" @touchmove.stop="pointTouchMove"></view>
+                <view data-type="point" data-pos="bottom" class="point point-bottom" @touchstart.stop="pointTouchStart" @touchmove.stop="pointTouchMove"></view>
+                <view data-type="point" data-pos="left" class="point point-left" @touchstart.stop="pointTouchStart" @touchmove.stop="pointTouchMove"></view>
+                <view data-type="point" data-pos="right" class="point point-right" @touchstart.stop="pointTouchStart" @touchmove.stop="pointTouchMove"></view>
+                <view data-type="point" data-pos="top-left" class="point point-top-left" @touchstart.stop="pointTouchStart" @touchmove.stop="pointTouchMove"></view>
+                <view data-type="point" data-pos="top-right" class="point point-top-right" @touchstart.stop="pointTouchStart" @touchmove.stop="pointTouchMove"></view>
+                <view data-type="point" data-pos="bottom-left" class="point point-bottom-left" @touchstart.stop="pointTouchStart" @touchmove.stop="pointTouchMove"></view>
+                <view data-type="point" data-pos="bottom-right" class="point point-bottom-right" @touchstart.stop="pointTouchStart" @touchmove.stop="pointTouchMove"></view>
+            </view>
+        </view>
+        <view id="action-area">
+            <view id="cut-btn" @tap="doCut">确定</view>
         </view>
     </view>
 </template>
 
 <script>
     import wepy from 'wepy'
-    import cutMask from '../components/cutMask'
+    let sx, sy, mx, my
+    let psx, psy, pmx, pmy
+    const MIN_CUT_WIDTH = 20
 
     export default class DealImage extends wepy.page {
         config = {
@@ -22,7 +35,6 @@
         }
 
         components = {
-            cutmask: cutMask
         }
 
         data = {
@@ -30,37 +42,196 @@
             cutWidth: 200,
             cutHeight: 200,
             cutLeft: 100,
-            cutTop: 100
+            cutTop: 100,
+            containerWidth: 0,
+            containerHeight: 0,
+            ctx: null
         }
 
         methods = {
+            blockTouchStart(e) {
+                sx = e.touches[0].clientX
+                sy = e.touches[0].clientY
+            },
+            blockTouchMove(e) {
+                mx = e.touches[0].clientX
+                my = e.touches[0].clientY
+                let ox = mx - sx
+                let oy = my - sy
+                this.moveCutBlock(ox, oy)
+                sx = mx
+                sy = my
+            },
+            pointTouchStart(e) {
+                psx = e.touches[0].clientX
+                psy = e.touches[0].clientY
+            },
+            pointTouchMove(e) {
+                pmx = e.touches[0].clientX
+                pmy = e.touches[0].clientY
+                let ox = pmx - psx
+                let oy = pmy - psy
+                this.resizeCutBlock(ox, oy, e.currentTarget)
+                psx = pmx
+                psy = pmy
+            },
+            doCut() {
+                const _this = this
+                wepy.showLoading({
+                    title: '处理中。。。'
+                })
+                wepy.canvasToTempFilePath({
+                    x: this.cutLeft,
+                    y: this.cutTop,
+                    width: this.cutWidth,
+                    height: this.cutHeight,
+                    canvasId: 'deal',
+                    success(res) {
+                        wepy.hideLoading()
+                        _this.imageSrc = res.tempFilePath
+                        _this.$apply()
+                        wepy.showToast({
+                            title: _this.imageSrc
+                        })
+                    },
+                    fail(res) {
+                        wepy.hideLoading()
+                        wepy.showModal({
+                            title: '提示',
+                            content: JSON.stringify(res)
+                        })
+                    }
+                })
+            }
+        }
 
+        moveCutBlock(ox, oy) {
+            let distX = this.cutLeft + ox
+            let distY = this.cutTop + oy
+            if (distX >= 0 && distY >= 0 && (distX <= this.maxLeft) && distY < this.maxTop) {
+                this.cutLeft = distX
+                this.cutTop = distY
+            } else {
+                if (distX < 0) {
+                    distX = 0
+                }
+                if (distY < 0) {
+                    distY = 0
+                }
+                if (distX > this.maxLeft) {
+                    distX = this.maxLeft
+                }
+                if (distY > this.maxTop) {
+                    distY = this.maxTop
+                }
+                this.cutLeft = distX
+                this.cutTop = distY
+            }
+        }
+
+        resizeCutBlock(ox, oy, target) {
+            if (target.dataset.pos === 'top') {
+                this.resizeTop(ox, oy)
+            } else if (target.dataset.pos === 'left') {
+                this.resizeLeft(ox, oy)
+            } else if (target.dataset.pos === 'bottom') {
+                this.resizeBottom(ox, oy)
+            } else if (target.dataset.pos === 'right') {
+                this.resizeRight(ox, oy)
+            } else if (target.dataset.pos === 'top-left') {
+                this.resizeLeft(ox, oy)
+                this.resizeTop(ox, oy)
+            } else if (target.dataset.pos === 'top-right') {
+                this.resizeRight(ox, oy)
+                this.resizeTop(ox, oy)
+            } else if (target.dataset.pos === 'bottom-left') {
+                this.resizeLeft(ox, oy)
+                this.resizeBottom(ox, oy)
+            } else if (target.dataset.pos === 'bottom-right') {
+                this.resizeRight(ox, oy)
+                this.resizeBottom(ox, oy)
+            }
+        }
+
+        resizeTop(ox, oy) {
+            let distTop = this.cutTop + oy
+            let fixTop = Math.max(distTop, 0)
+            fixTop = Math.min(fixTop, this.cutTop + this.cutHeight - MIN_CUT_WIDTH)
+            let realChangeH = fixTop - this.cutTop
+            this.cutHeight -= realChangeH
+            this.cutTop = fixTop
+        }
+
+        resizeLeft(ox, oy) {
+            let distLeft = this.cutLeft + ox
+            let fixLeft = Math.max(distLeft, 0)
+            fixLeft = Math.min(fixLeft, this.cutLeft + this.cutWidth - MIN_CUT_WIDTH)
+            let realChangeW = fixLeft - this.cutLeft
+            this.cutWidth -= realChangeW
+            this.cutLeft = fixLeft
+        }
+
+        resizeRight(ox, oy) {
+            let distW = this.cutWidth + ox
+            let fixW = Math.max(distW, MIN_CUT_WIDTH)
+            fixW = Math.min(fixW, this.containerWidth - this.cutLeft)
+            this.cutWidth = fixW
+        }
+
+        resizeBottom(ox, oy) {
+            let distH = this.cutHeight + oy
+            let fixH = Math.max(distH, MIN_CUT_WIDTH)
+            fixH = Math.min(fixH, this.containerHeight - this.cutTop)
+            this.cutHeight = fixH
         }
 
         computed = {
-            topLeftBlockTop() {
-                return this.cutTop
+            maxLeft() {
+                return this.containerWidth - this.cutWidth
             },
-            topLeftBlockLeft() {
-                return this.cutLeft - 5
+            maxTop() {
+                return this.containerHeight - this.cutHeight
             }
         }
 
         onLoad(param) {
-            wepy.showModal({
-                title: '成功！',
-                content: JSON.stringify(param)
-            })
             const imageSrc = param.src
+            this.imageSrc = imageSrc
             const ctx = wepy.createCanvasContext('deal')
+            this.ctx = ctx
+        }
 
+        onReady() {
+            const _this = this
             let query = wepy.createSelectorQuery()
             query.select('#deal-canvas').boundingClientRect()
             query.exec(function(res) {
-                let width = res[0].width
-                let height = res[0].height
-                ctx.drawImage(imageSrc, 0, 0, width, height)
-                ctx.draw()
+                let canvasWidth = res[0].width
+                let canvasHeight = res[0].height
+                wepy.getImageInfo({
+                    src: _this.imageSrc,
+                    success(res) {
+                        let drawWidth, drawHeight
+                        if (res.width / res.height > 1) {
+                            drawWidth = canvasWidth
+                            drawHeight = drawWidth * res.height / res.width
+                        } else {
+                            drawHeight = canvasHeight
+                            drawWidth = drawHeight * res.width / res.height
+                        }
+                        let offsetX = (canvasWidth - drawWidth) / 2
+                        let offsetY = (canvasHeight - drawHeight) / 2
+                        _this.ctx.drawImage(_this.imageSrc, offsetX, offsetY, drawWidth, drawHeight)
+                        _this.ctx.draw()
+                    }
+                })
+            })
+
+            let subQuery = wepy.createSelectorQuery()
+            subQuery.select('.rect-cut-container').boundingClientRect()
+            subQuery.exec((res) => {
+                this.containerWidth = res[0].width
+                this.containerHeight = res[0].height
             })
         }
     }
@@ -69,6 +240,16 @@
 <style>
     #deal-image {
         position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+    #cut-image {
+        width: 100vw;
+        height: calc(100vh - 180rpx);
+        background: #000;
+    }
+    #cut-image image {
         width: 100%;
         height: 100%;
     }
@@ -76,50 +257,93 @@
         width: 100vw;
         height: calc(100vh - 180rpx);
         background: aqua;
-    }
-    #line-box {
         position: absolute;
-        top: 30%;
-        left: 0;
-        width: 100%;
-        height: 10rpx;
-        background: #42de93;
-    }
-    movable-area {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
+        top: -9999px;
+        left: -9999px;
     }
     .rect-cut-container {
         width: 100%;
-        height: 100%;
+        height: calc(100vh - 180rpx);
         position: absolute;
         top: 0;
         left: 0;
         z-index: 2;
         overflow: hidden;
     }
-    movable-view.rect-cut {
-        border: 1px solid #efefef;
+    .cut-block {
         position: absolute;
-        background: rgba(0,0,0,.3);
+        background: rgba(0, 0, 0, .2);
+        border: 1px solid #42de98;
     }
-    .top-left-border {
-        width: 5px;
-        height: 30px;
-        background: #42de98;
+    .cut-block .point {
         position: absolute;
-        left: -5px;
+        width: 20rpx;
+        height: 20rpx;
+        border: 20rpx solid transparent;
+        transform: translate3d(-50%, -50%, 0);
+    }
+    .cut-block .point::after {
+        position: absolute;
+        content: '\20';
+        width: 20rpx;
+        height: 20rpx;
+        border-radius: 20rpx;
+        left:0;
+        top: 0;
+        background: #42de98;
+    }
+    .cut-block .point:hover::after {
+        transform: scale(1.2);
+    }
+    .cut-block .point.point-top {
+        left: 50%;
         top: 0;
     }
-    .top-left-border::after {
-        content: '\20';
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        bottom: -10px;
-        right: -10px;
+    .cut-block .point.point-left {
+        left: 0;
+        top: 50%;
+    }
+    .cut-block .point.point-right {
+        right: 0;
+        top: 50%;
+        transform:translate3d(50%,-50%,0);
+    }
+    .cut-block .point.point-bottom {
+        left: 50%;
+        bottom: 0;
+        transform:translate3d(-50%,50%,0);
+    }
+    .cut-block .point.point-top-left {
+        left: 0;
+        top: 0;
+    }
+    .cut-block .point.point-top-right {
+        right: 0;
+        top: 0;
+        transform:translate3d(50%,-50%,0);
+    }
+    .cut-block .point.point-bottom-left {
+        left: 0;
+        bottom: 0;
+        transform:translate3d(-50%,50%,0);
+    }
+    .cut-block .point.point-bottom-right {
+        right: 0;
+        bottom: 0;
+        transform:translate3d(50%,50%,0);
+    }
+    #action-area {
+        width: 100%;
+        height: 180rpx;
+        background: #000;
+    }
+    #cut-btn {
+        width: 180rpx;
+        height: 180rpx;
+        border-radius: 180rpx;
+        background: rgba(255,255,255,.8);
+        margin: 0 auto;
+        line-height: 180rpx;
+        text-align: center;
     }
 </style>

@@ -8,7 +8,7 @@
         <text class="name" @tap="tap">{{grouplist.name}}</text>
         <view>
             <repeat for="{{grouplist.list}}" item="item">
-                <groupitem :gitem="item"></groupitem>
+                <groupitem :gitem="item" style="display: block;"></groupitem>
             </repeat>
         </view>
     </view>
